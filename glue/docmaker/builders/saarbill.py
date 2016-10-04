@@ -119,6 +119,12 @@ def __load_extra_info(conn, serie_folio):
                 SELECT leyenda FROM gral_emp_leyenda
                  WHERE gral_emp_id = cxc_clie.empresa_id
             ) as legends
+        ),
+        (SELECT
+            ARRAY(
+                SELECT leyenda_eng FROM gral_emp_leyenda
+                 WHERE gral_emp_id = cxc_clie.empresa_id
+            ) as legends_eng
         )
         FROM fac_docs
         LEFT JOIN cxc_clie_credias ON cxc_clie_credias.id = fac_docs.terminos_id
@@ -140,7 +146,7 @@ def __load_extra_info(conn, serie_folio):
         raise DocBuilderStepError("an error happen when loading extra info dat")
 
 
-def __format_extra_info(rows):
+def __format_extra_info(rows, cap):
 
     rd = {}
     for i in rows:
@@ -152,7 +158,7 @@ def __format_extra_info(rows):
         rd['CURRENCY_ABR'] = i['currency_abr']
         rd['CURRENCY_NAME'] = i['currency_name']
         rd['OBSERVACIONES'] = i['observaciones']
-        rd['BILL_LEGENDS'] = i['legends']
+        rd['BILL_LEGENDS'] = i['legends'] if cap == 'SPA' else i['legends_eng']
     return rd
 
 
@@ -232,7 +238,7 @@ def __h_acquisition(logger, conn, res_dirs, **kwargs):
 
     try:
         einfo_rows = __load_extra_info(conn, serie_folio)
-        dat['EXTRA_INFO'] = __format_extra_info(einfo_rows)
+        dat['EXTRA_INFO'] = __format_extra_info(einfo_rows, cap)
     except Exception as e:
         logger.error(e)
         raise DocBuilderStepError("loading extra info fails")
