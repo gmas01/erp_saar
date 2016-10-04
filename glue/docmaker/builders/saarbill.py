@@ -17,6 +17,38 @@ from cfdi.readers import CfdiReader
 from docmaker.error import DocBuilderStepError
 import re
 
+__captions = {
+    'SPA': {
+        'TL_CUST_NAME': 'CLIENTE',
+        'TL_CUST_ADDR': 'DIRECCIÓN',
+        'TL_CUST_TAX_ID': 'R.F.C',
+        'TL_CUST_NUM': 'NO. DE CLIENTE',
+        'TL_ORDER_NUM': 'NO. DE ORDEN',
+        'TL_BILL_CURR': 'MONEDA',
+        'TL_BILL_EXC_RATE': 'TIPO DE CAMBIO',
+        'TL_PAY_DATE': 'FECHA DE PAGO',
+        'TL_SALE_MAN': 'AGENTE DE VENTAS',
+        'TL_PAY_COND': 'CONDICIONES DE PAGO',
+        'TL_ACC_NUM': 'NO. DE CUENTA',
+        'TL_PAY_MET': 'METODO DE PAGO',
+        'TL_PAY_WAY': 'FORMA DE PAGO'
+    },
+    'ENG': {
+        'TL_CUST_NAME': 'CUSTOMER',
+        'TL_CUST_ADDR': 'ADDRESS',
+        'TL_CUST_TAX_ID': None,
+        'TL_CUST_NUM': None,
+        'TL_ORDER_NUM': None,
+        'TL_BILL_CURR': 'CURRENCY',
+        'TL_BILL_EXC_RATE': 'EXCHANGE RATE',
+        'TL_PAY_DATE': None,
+        'TL_SALE_MAN': 'SALE MAN',
+        'TL_PAY_COND': None,
+        'TL_ACC_NUM': None,
+        'TL_PAY_MET': None,
+        'TL_PAY_WAY': None
+    }
+}
 
 class NumberedCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
@@ -111,6 +143,7 @@ def __h_acquisition(logger, conn, res_dirs, **kwargs):
     """
     """
     dat = {
+        'CAP_LOADED': None,
         'CUSTOMER_WWW':'www.saar.com.mx',
         'CUSTOMER_PHONE':'83848025,8384-8085, 8384-8028',
         'XML_PARSED': None,
@@ -120,12 +153,17 @@ def __h_acquisition(logger, conn, res_dirs, **kwargs):
         'FOOTER_ABOUT': "ESTE DOCUMENTO ES UNA REPRESENTACIÓN IMPRESA DE UN CFDI"
     }
 
+    cap = kwargs.get('cap', 'SPA')
+    if not cap in __captions:
+        raise DocBuilderStepError("caption {0} not found".format(cap))
+    dat['CAP_LOADED'] = __captions[cap]
+
     cedula_filename = "{0}/{1}_cedula.png".format(
         res_dirs['images'],
         kwargs['rfc']
     )
     if not os.path.isfile(cedula_filename):
-        raise DocBuilderStepError("{0} not found".format(cedula_filename))
+        raise DocBuilderStepError("cedula image {0} not found".format(cedula_filename))
     dat['CEDULA'] = cedula_filename
 
     logo_filename = "{0}/{1}_logo.png".format(
@@ -133,7 +171,7 @@ def __h_acquisition(logger, conn, res_dirs, **kwargs):
         kwargs['rfc']
     )
     if not os.path.isfile(logo_filename):
-        raise DocBuilderStepError("{0} not found".format(logo_filename))
+        raise DocBuilderStepError("logo image {0} not found".format(logo_filename))
 
     dat['LOGO'] = logo_filename
     cfdi_xml = "{0}/{1}/{2}".format(
@@ -588,13 +626,13 @@ def __create_customer_sec(dat):
 
     cont = []
 
-    cont.append(['CLIENTE'])
+    cont.append([ dat['CAP_LOADED']['TL_CUST_NAME'] ])
     cont.append([ dat['XML_PARSED']['RECEPTOR_NAME'].upper() ])
 
-    cont.append(['R.F.C.'])
+    cont.append([ dat['CAP_LOADED']['TL_CUST_TAX_ID'] ] )
     cont.append([ dat['XML_PARSED']['RECEPTOR_RFC'].upper() ])
 
-    cont.append(['DIRECCIÓN'])
+    cont.append([ dat['CAP_LOADED']['TL_CUST_ADDR'] ])
     cont.append([ (
         "{0} {1}".format(
             dat['XML_PARSED']['RECEPTOR_STREET'],
@@ -638,20 +676,20 @@ def __create_extra_sec(dat):
 
     cont = []
 
-    cont.append(['NO. DE CLIENTE', 'METODO DE PAGO' ])
+    cont.append([ dat['CAP_LOADED']['TL_CUST_NUM'], dat['CAP_LOADED']['TL_PAY_MET'] ])
     cont.append([ dat['EXTRA_INFO']['CUSTOMER_CONTROL_ID'], dat['XML_PARSED']['METODO_PAGO'] ])
 
-    cont.append(['NO. DE ORDEN', 'CONDICIONES DE PAGO'])
+    cont.append([ dat['CAP_LOADED']['TL_ORDER_NUM'], dat['CAP_LOADED']['TL_PAY_COND'] ])
     cont.append([ dat['EXTRA_INFO']['PURCHASE_NUMBER'], dat['EXTRA_INFO']['PAYMENT_CONSTRAINT'] ])
 
-    cont.append(['MONEDA', 'FORMA DE PAGO'])
+    cont.append([ dat['CAP_LOADED']['TL_BILL_CURR'] , dat['CAP_LOADED']['TL_PAY_WAY']])
     cont.append([ dat['EXTRA_INFO']['CURRENCY_ABR'], dat['XML_PARSED']['FORMA_PAGO'] ])
 
-    cont.append(['TIPO DE CAMBIO', 'NO. DE CUENTA'])
+    cont.append([ dat['CAP_LOADED']['TL_BILL_EXC_RATE'], dat['CAP_LOADED']['TL_ACC_NUM'] ])
     cont.append([ dat['XML_PARSED']['MONEY_EXCHANGE'], "0" ])
 
-    cont.append(['FECHA DE PAGO', 'AGENTE DE VENTAS'])
-    cont.append([ dat['EXTRA_INFO']['PAYMENT_DATE'], dat['EXTRA_INFO']['SALES_MAN']])
+    cont.append([ dat['CAP_LOADED']['TL_PAY_DATE'], dat['CAP_LOADED']['TL_SALE_MAN'] ])
+    cont.append([ dat['EXTRA_INFO']['PAYMENT_DATE'], dat['EXTRA_INFO']['SALES_MAN'] ])
 
     table = Table(cont,
         [
