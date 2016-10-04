@@ -19,9 +19,13 @@ import re
 
 __captions = {
     'SPA': {
+        'TL_DOC_NAME': 'FACTURA',
+        'TL_DOC_DATE': 'FECHA Y HORA',
+        'TL_DOC_OBS': 'OBSERVACIONES',
         'TL_CUST_NAME': 'CLIENTE',
         'TL_CUST_ADDR': 'DIRECCIÓN',
-        'TL_CUST_TAX_ID': 'R.F.C',
+        'TL_CUST_ZIPC': 'C.P.',
+        'TL_CUST_REG': 'R.F.C',
         'TL_CUST_NUM': 'NO. DE CLIENTE',
         'TL_ORDER_NUM': 'NO. DE ORDEN',
         'TL_BILL_CURR': 'MONEDA',
@@ -31,22 +35,44 @@ __captions = {
         'TL_PAY_COND': 'CONDICIONES DE PAGO',
         'TL_ACC_NUM': 'NO. DE CUENTA',
         'TL_PAY_MET': 'METODO DE PAGO',
-        'TL_PAY_WAY': 'FORMA DE PAGO'
+        'TL_PAY_WAY': 'FORMA DE PAGO',
+        'TL_ART_SKU': 'CLAVE',
+        'TL_ART_DES': 'DESCRIPCIÓN',
+        'TL_ART_UNIT': 'UNIDAD',
+        'TL_ART_QUAN': 'CANTIDAD',
+        'TL_ART_UP': 'P. UNITARIO',
+        'TL_ART_AMNT': 'IMPORTE',
+        'TL_ART_SUBT': 'SUB-TOTAL',
+#        'TL_ART_TAX_ID': 'IVA',
+        'TL_ART_TOTAL': 'TOTAL'
     },
     'ENG': {
+        'TL_DOC_NAME': 'INVOICE',
+        'TL_DOC_DATE': 'DATE',
+        'TL_DOC_OBS': 'OBS',
         'TL_CUST_NAME': 'CUSTOMER',
-        'TL_CUST_ADDR': 'ADDRESS',
-        'TL_CUST_TAX_ID': None,
+        'TL_CUST_ADDR': 'ADDRESS SOLD TO',
+        'TL_CUST_ZIPC': 'ZIP CODE',
+        'TL_CUST_REG': None,
         'TL_CUST_NUM': None,
         'TL_ORDER_NUM': None,
         'TL_BILL_CURR': 'CURRENCY',
         'TL_BILL_EXC_RATE': 'EXCHANGE RATE',
-        'TL_PAY_DATE': None,
-        'TL_SALE_MAN': 'SALE MAN',
+        'TL_PAY_DATE': 'PAYMENT DATE',
+        'TL_SALE_MAN': 'SALE REP',
         'TL_PAY_COND': None,
         'TL_ACC_NUM': None,
         'TL_PAY_MET': None,
-        'TL_PAY_WAY': None
+        'TL_PAY_WAY': 'TERMS',
+        'TL_ART_SKU': 'SKU',
+        'TL_ART_DES': 'DESCRIPTION',
+        'TL_ART_UNIT': 'MEASURE',
+        'TL_ART_QUAN': 'QUANTITY',
+        'TL_ART_UP': 'UNIT PRICE',
+        'TL_ART_AMNT': 'AMOUNT',
+        'TL_ART_SUBT': 'SUBT',
+#        'TL_ART_TAX_ID': 'TAX ID',
+        'TL_ART_TOTAL': 'TOTAL'
     }
 }
 
@@ -544,11 +570,11 @@ def __create_factura_table(dat):
 
     cont = []
 
-    cont.append(['FACTURA'])
+    cont.append([ dat['CAP_LOADED']['TL_DOC_NAME'] ])
     cont.append(['No.' ])
     cont.append([ serie_folio ])
 
-    cont.append(['FECHA Y HORA'])
+    cont.append([ dat['CAP_LOADED']['TL_DOC_DATE'] ])
     cont.append([ dat['XML_PARSED']['CFDI_DATE'] ])
 
     cont.append(['FOLIO FISCAL'])
@@ -629,7 +655,7 @@ def __create_customer_sec(dat):
     cont.append([ dat['CAP_LOADED']['TL_CUST_NAME'] ])
     cont.append([ dat['XML_PARSED']['RECEPTOR_NAME'].upper() ])
 
-    cont.append([ dat['CAP_LOADED']['TL_CUST_TAX_ID'] ] )
+    cont.append([ dat['CAP_LOADED']['TL_CUST_REG'] ] )
     cont.append([ dat['XML_PARSED']['RECEPTOR_RFC'].upper() ])
 
     cont.append([ dat['CAP_LOADED']['TL_CUST_ADDR'] ])
@@ -645,7 +671,7 @@ def __create_customer_sec(dat):
         dat['XML_PARSED']['RECEPTOR_STATE']
     ).upper()])
     cont.append([ dat['XML_PARSED']['RECEPTOR_COUNTRY'].upper() ])
-    cont.append([ "%s %s" % ("C.P.", dat['XML_PARSED']['RECEPTOR_CP']) ])
+    cont.append([ "%s %s" % ( dat['CAP_LOADED']['TL_CUST_ZIPC'], dat['XML_PARSED']['RECEPTOR_CP']) ])
 
     table = Table(cont,
         [
@@ -733,8 +759,9 @@ def __create_arts_section(dat):
     )
 
     header_concepts = (
-        'CLAVE', 'DESCRIPCIÓN', 'UNIDAD', 'CANTIDAD',
-        'P.UNITARIO', 'IMPORTE'
+        dat['CAP_LOADED']['TL_ART_SKU'], dat['CAP_LOADED']['TL_ART_DES'],
+        dat['CAP_LOADED']['TL_ART_UNIT'], dat['CAP_LOADED']['TL_ART_QUAN'],
+        dat['CAP_LOADED']['TL_ART_UP'], dat['CAP_LOADED']['TL_ART_AMNT']
     )
 
     cont_concepts = []
@@ -807,9 +834,12 @@ def __create_arts_section(dat):
 def __create_total_section(dat):
 
     cont = [
-       ["SUB-TOTAL", dat['EXTRA_INFO']['CURRENCY_ABR'],
-       currency_format(
-           __chomp_extra_zeroes(dat['XML_PARSED']['CFDI_SUBTOTAL']))
+       [
+            dat['CAP_LOADED']['TL_ART_SUBT'],
+             dat['EXTRA_INFO']['CURRENCY_ABR'],
+            currency_format(
+               __chomp_extra_zeroes(dat['XML_PARSED']['CFDI_SUBTOTAL'])
+            )
        ]
     ]
 
@@ -824,7 +854,7 @@ def __create_total_section(dat):
         cont.append(row)
 
     cont.append([
-        "TOTAL", dat['EXTRA_INFO']['CURRENCY_ABR'],
+        dat['CAP_LOADED']['TL_ART_TOTAL'], dat['EXTRA_INFO']['CURRENCY_ABR'],
         currency_format(__chomp_extra_zeroes(dat['XML_PARSED']['CFDI_TOTAL']))
     ])
 
@@ -915,7 +945,7 @@ def __comments_table(dat):
         return None
 
     st = ParagraphStyle(name='info',fontName='Helvetica', fontSize=7, leading = 8)
-    cont = [['OBSERVACIONES']]
+    cont = [[ dat['CAP_LOADED']['TL_DOC_OBS'] ]]
 
     cont.append([ Paragraph( dat['EXTRA_INFO']['OBSERVACIONES'], st) ])
 
