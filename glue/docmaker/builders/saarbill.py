@@ -5,6 +5,7 @@ from reportlab.lib import colors
 from reportlab.lib.units import cm 
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.pdfgen import canvas
+from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT, TA_JUSTIFY
 
 import lxml.etree as ET
 import os
@@ -13,6 +14,7 @@ import psycopg2.extras
 from utils.numbertrans import transnum_spa
 from utils.numberformat import currency_format
 from cfdi.readers import CfdiReader
+from docmaker.error import DocBuilderStepError
 import re
 
 
@@ -52,7 +54,14 @@ def __load_extra_info(conn, serie_folio):
         END) AS payment_date,
         upper(gral_mon.descripcion) AS currency_name,
         gral_mon.descripcion_abr AS currency_abr,
-        cxc_clie.numero_control AS customer_control_id
+        cxc_clie.numero_control AS customer_control_id,
+        fac_docs.observaciones,
+        (SELECT
+            ARRAY(
+                SELECT leyenda FROM gral_emp_leyenda
+                 WHERE gral_emp_id = cxc_clie.empresa_id
+            ) as legends
+        )
         FROM fac_docs
         LEFT JOIN cxc_clie_credias ON cxc_clie_credias.id = fac_docs.terminos_id
         LEFT JOIN gral_mon on gral_mon.id = fac_docs.moneda_id
@@ -84,6 +93,8 @@ def __format_extra_info(rows):
         rd['PAYMENT_DATE'] = i['payment_date']
         rd['CURRENCY_ABR'] = i['currency_abr']
         rd['CURRENCY_NAME'] = i['currency_name']
+        rd['OBSERVACIONES'] = i['observaciones']
+        rd['BILL_LEGENDS'] = i['legends']
     return rd
 
 
@@ -206,7 +217,13 @@ def __h_write_format(output_file, logger, dat):
             __create_total_section(dat)
         )
     )
-    story.append(Spacer(1, 1.0 * cm))
+    story.append(Spacer(1, 0.45 * cm))
+
+    ct = __comments_table(dat)
+    if ct:
+        story.append(ct)
+
+    story.append(Spacer(1, 0.6* cm))
     story.append(__info_cert_table(dat))
     story.append(
         __info_stamp_table(
@@ -215,6 +232,11 @@ def __h_write_format(output_file, logger, dat):
         )
     )
     story.append(__info_cert_extra(dat))
+    story.append(Spacer(1, 0.6 * cm))
+
+    lt = __legend_table(dat)
+    if lt:
+        story.append(lt)
 
     def fp_foot(c, d):
         c.saveState()
@@ -589,7 +611,7 @@ def __create_customer_sec(dat):
 
     table = Table(cont,
         [
-            8.3 * cm   # rowWitdhs
+            8.6 * cm   # rowWitdhs
         ],
         [0.35*cm] * 10 # rowHeights
     )
@@ -633,7 +655,7 @@ def __create_extra_sec(dat):
 
     table = Table(cont,
         [
-            4.3 * cm,
+            4.0 * cm,
             7.0 * cm   # rowWitdhs
         ],
         [0.35*cm] * 10 # rowHeights
@@ -847,6 +869,64 @@ def __amount_table(t0, t1):
     ]))
 
     return table
+
+
+def __comments_table(dat):
+
+    if not dat['EXTRA_INFO']['OBSERVACIONES']:
+        return None
+
+    st = ParagraphStyle(name='info',fontName='Helvetica', fontSize=7, leading = 8)
+    cont = [['OBSERVACIONES']]
+
+    cont.append([ Paragraph( dat['EXTRA_INFO']['OBSERVACIONES'], st) ])
+
+    table = Table(cont,
+        [
+            20.0 * cm
+        ]
+    )
+
+    table.setStyle( TableStyle([
+        ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+        ('VALIGN', (0, 0),(0, 0), 'MIDDLE'),
+        ('ALIGN', (0, 0),(0, 0), 'LEFT'),
+        ('FONT', (0, 0), (0, 0), 'Helvetica-Bold', 7),
+        ('BACKGROUND', (0, 0),(0, 0), colors.black),
+        ('TEXTCOLOR', (0, 0),(0, 0), colors.white),
+
+    ]))
+
+    return table
+
+
+def __legend_table(dat):
+
+    if len(dat['EXTRA_INFO']['BILL_LEGENDS']) == 0:
+        return None
+
+    st = ParagraphStyle(name='info', alignment=TA_CENTER, fontName='Helvetica', fontSize=7, leading = 7)
+    cont = []
+
+    for l in dat['EXTRA_INFO']['BILL_LEGENDS']:
+        row = [
+            Paragraph(l, st)
+        ]
+        cont.append(row)
+
+    table = Table(cont,
+        [
+            20.0 * cm
+        ]
+    )
+
+    table.setStyle( TableStyle([
+        ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+
+    return table
+
 
 def __h_data_release(logger, dat):
     """
