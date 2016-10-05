@@ -12,6 +12,7 @@ import com.agnux.cfdi.BeanFacturadorCfdi;
 import com.agnux.cfdi.adendas.AdendaCliente;
 import com.agnux.cfdi.timbre.BeanFacturadorCfdiTimbre;
 import com.agnux.common.helpers.FileHelper;
+import com.agnux.common.helpers.GlueRunner;
 import com.agnux.common.helpers.StringHelper;
 import com.agnux.common.helpers.TimeHelper;
 import com.agnux.common.obj.DataPost;
@@ -909,8 +910,22 @@ public class PrefacturasController {
                                 if (parametros.get("formato_factura").equals("2")){
                                     pdfCfd_CfdiTimbradoFormato2 pdfFactura = new pdfCfd_CfdiTimbradoFormato2(this.getGralDao(), dataFacturaCliente, listaConceptosPdfCfd, leyendas, datosExtrasPdfCfd, id_empresa, id_sucursal);
                                     pdfFactura.ViewPDF();
-                                }else{
-                                    pdfCfd_CfdiTimbrado pdfFactura = new pdfCfd_CfdiTimbrado(this.getGralDao(), dataFacturaCliente, listaConceptosPdfCfd, datosExtrasPdfCfd, id_empresa, id_sucursal);
+                                } else {
+                                    String rfcEmpresaEmisora = this.getGralDao().getRfcEmpresaEmisora(id_empresa);
+                                    String outputDir = this.getGralDao().getCfdiTimbreEmitidosDir() + rfcEmpresaEmisora;
+
+                                    String cfdi_xml = refId + ".xml";
+                                    String glueDir = System.getenv("HOME") + "/glue";
+                                    String caption = "SPA";
+                                    String params = String.format("-d -b saarbill -o %s/%s.pdf -i rfc=%s;cfdi_xml=%s;cap=%s", outputDir, refId, rfcEmpresaEmisora, cfdi_xml,caption);
+                                    try {
+                                        GlueRunner glueRunner = new GlueRunner(glueDir, log);
+                                        glueRunner.go("dmcli.py", params, false, null);
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(PrefacturasController.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(PrefacturasController.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
                                 }
                                 //System.out.println(TimeHelper.getFechaActualYMDH()+":::::::::::Termina construccion de PDF:::::::::::::::::..");
                                 
