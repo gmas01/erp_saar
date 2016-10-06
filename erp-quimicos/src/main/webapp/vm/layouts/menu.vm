@@ -94,11 +94,6 @@
 													<!--
 													<li class="topline"><a href="../facnomina/startup.agnux">N&oacute;mina</a></li>
 													-->
-													
-													<!--
-													<li class="topline"><a href="#">Factura Venta</a></li>
-													<li class="topline"><a href="#">Nota Cr&eacute;dito/Cargo</a></li>
-													-->
 												</ul>
 											</li>
 											
@@ -114,10 +109,6 @@
 													<li class="topline"><a href="../repfacturacion/startup.agnux">Facturaci&oacute;n</a></li>
 													<li class="topline"><a href="../repremision/startup.agnux">Remisiones</a></li>
 													<li class="topline"><a href="../repremisionfacturada/startup.agnux">Remisiones Facturadas</a></li>
-													<!--
-													<li class="topline"><a href="#">Documentos</a></li>
-													<li class="topline"><a href="#">Estad&iacute;stico de Ventas</a></li>
-													-->
 												</ul>
 											</li>
 
@@ -248,12 +239,11 @@
 													-->
 												</ul>
 											</li>
-											
+
 											<li>
 												<a href="#" class="sub">Reportes &raquo;</a>
 												<ul>
 													<li class="topline"><a href="../repedoctaprov/startup.agnux">Estados de Cuenta</a></li>
-													<li class="topline"><a href="../reppagosdiaria/startup.agnux">Relacion de Pagos Diarios</a></li>
 													<li class="topline"><a href="../repprogramacionpagos/startup.agnux">Programaci&oacute;n de pagos</a></li>
 													<li class="topline"><a href="../cxprepantiguedadsaldos/startup.agnux">Antig&uuml;edad de Saldos</a></li>
 													<li class="topline"><a href="../cxprepsaldomes/startup.agnux">Saldo Mensual</a></li>
@@ -274,15 +264,12 @@
 											<li>
 												<a href="#" class="sub">Procesos &raquo;</a>
 												<ul>
-
 													<li class="topline"><a href="../com_requisicion/startup.agnux">Requisici&oacute;n</a></li>
-													<li class="topline"><a href="../com_oc_req/startup.agnux">Autorizaci&oacute;n de Requisici&oacute;n</a></li>
-													
+													<!--<li class="topline"><a href="../com_oc_req/startup.agnux">Autorizaci&oacute;n de Requisici&oacute;n</a></li>-->
 													<li class="topline"><a href="../comordencompra/startup.agnux">Orden de Compra</a></li>
 													<li class="topline"><a href="../comcompraautorizacion/startup.agnux">Autorizaci&oacute;n de O. C.</a></li>
 													<li class="topline"><a href="../entradamercancias/startup.agnux">Facturas de Compras</a></li>
 													<li class="topline"><a href="../comfacdevolucion/startup.agnux">Devoluci&oacute;n</a></li>
-													
 													<li class="topline"><a href="../invcapturacostos/startup.agnux">Costo de Reposici&oacute;n</a></li>
 													<!--
 													<li class="topline"><a href="#">Cancelaci&oacute;n</a></li>
@@ -302,12 +289,7 @@
 											</li>
 										</ul>
 									</li>
-
-
-
-
-
-
+									
 									<li class="accessible">
 											<a href="http://jdsharp.us" class="accessible">Inventarios &raquo;</a>
 											<ul>
@@ -333,7 +315,6 @@
 													<li class="topline"><a href="../invpre/startup.agnux">Precios</a></li>
 													<li class="topline"><a href="../invunidades/startup.agnux">Unidades</a></li>
 													<li class="topline"><a href="../invpresentaciones/startup.agnux">Presentaciones</a></li>
-
 													<!--
 													<li class="topline"><a href="../invformulas/startup.agnux">F&oacute;rmulas</a></li>//esto se fue al menu produccion
 													<li class="topline"><a href="#">Impuestos</a></li>
@@ -347,24 +328,6 @@
 													<li class="topline"><a href="../invplazassucursales/startup.agnux">Plazas a Sucursales</a></li>
 												</ul>
 											</li>
-											<!--
-											<li>
-												<a href="#" class="sub">Traspasos &raquo;</a>
-												<ul>
-													<li class="topline"><a href="../traspasomercancias/startup.agnux">Traspaso</a></li>
-												</ul>
-											</li>
-
-											<li>
-												<a href="#" class="sub">Captura Movimientos &raquo;</a>
-												<ul>
-													<li class="topline"><a href="#">Existencia Inicial</a></li>
-													<li class="topline"><a href="#">Entradas</a></li>
-													<li class="topline"><a href="#">Salidas</a></li>
-												</ul>
-											</li>
-											-->
-
 											<li>
 												<a href="#" class="sub">Procesos &raquo;</a>
 												<ul>
@@ -379,6 +342,8 @@
 													<li class="topline"><a href="../invordpresuben/startup.agnux">Orden de Producci&oacute;n</a></li>
 													<li class="topline"><a href="../invordsubensamble/startup.agnux">Producci&oacute;n de Subensamble</a></li>
 													-->
+													<li class="topline"><a href="../invordpresuben2/startup.agnux">Pre-Orden de Producci&oacute;n</a></li>
+													<li class="topline"><a href="../invordsubensamble2/startup.agnux">Producci&oacute;n de Subensamble</a></li>
 													
 													<li class="topline"><a href="../invcontrolcostos/startup.agnux">Control de Costos</a></li>
 													<li class="topline"><a href="../invactualizaprecios/startup.agnux">Actualizar Precios</a></li>
@@ -478,11 +443,6 @@
 
 
 
-
-
-
-
-
 									<li class="accessible">
 										<a href="http://jdsharp.us" class="accessible">Rutas &raquo;</a>
 										<ul>
@@ -545,54 +505,6 @@
 									</li>
 
 
-
-									<!-- Menu de produccion "NO BORRAR PORFAVOR, se enojara el papa de Paco"  -->
-									<li class="accessible">
-										<a href="http://jdsharp.us" class="accessible">Producci&oacute;n &raquo;</a>
-										<ul>
-											
-											<li>
-												<a href="#" class="sub">Cat&aacute;logos &raquo;</a>
-												<ul>
-													<li><a href="../proequipos/startup.agnux">Equipos</a></li>
-													<li><a href="../proequiposadic/startup.agnux">Equipos Adicionales</a></li>
-													<li><a href="../protipoequipo/startup.agnux">Tipos de Equipo</a></li>
-													<li><a href="../proinstrumentosmedicion/startup.agnux">Instrumentos de Medici&oacute;n</a></li>
-												</ul>
-											</li>
-											
-											<li>
-												<a href="#" class="sub">Procesos &raquo;</a>
-												<ul>
-													<li class="topline"><a href="../proformulasdesarrollo/startup.agnux">Formulas en Desarrollo</a></li>
-													<li class="topline"><a href="../proconfigproduccion/startup.agnux">Configuraci&oacute;n</a></li>
-													<li class="topline"><a href="../propreordenproduccion/startup.agnux">Preorden Producci&oacute;n</a></li>
-													<li class="topline"><a href="../proordenproduccion/startup.agnux">Orden Producci&oacute;n</a></li>
-													<li class="topline"><a href="../procalidad/startup.agnux">Aseguramiento de Calidad</a></li>
-													<li class="topline"><a href="../proordensimulacion/startup.agnux">Simulaci&oacute;n de Producci&oacute;n</a></li>
-
-													<!--
-													<li class="topline"><a href="#">Cancelaci&oacute;n</a></li>
-													<li class="topline"><a href="#">Nota Cargo/Cr&eacute;dito</a></li>
-													<li class="topline"><a href="#">Consulta Cancelaci&oacute;n/Devoluci&oacute;n</a></li>
-													<li class="topline"><a href="#">Recepci&oacute;n Documentos XML</a></li>
-													-->
-												</ul>
-											</li>
-											<li>
-												<a href="#" class="sub">Reportes&raquo;</a>
-												<ul>
-													<!--<li class="topline"><a href="#">F&oacute;rmulas</a></li>-->
-													<li class="topline"><a href="../proreporteproduccion/startup.agnux">Producci&oacute;n</a></li>
-													<li class="topline"><a href="../proreportecalidad/startup.agnux">Reporte de Calidad</a></li>
-												</ul>
-											</li>
-										</ul>
-									</li>
-									
-									
-									
-									
 									<li class="accessible" >
 										<a href="http://jdsharp.us" class="accessible">Envasado &raquo;</a>
 										<ul>
@@ -615,8 +527,6 @@
 										</ul>
 									</li>
 									
-
-
 
 
 									<li class="accessible">
@@ -655,9 +565,6 @@
 
 										</ul>
 									</li>
-
-
-
 
 
 
