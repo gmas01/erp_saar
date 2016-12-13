@@ -120,7 +120,14 @@ public class FacturasSpringDao implements FacturasInterfaceDao{
     }
     
     
+    public String idioma_factura(String c_id){
+        String q = String.format("select s.lang from ( select (CASE WHEN count(fac_idioma) = 0 THEN 'SPA'::character varying END) AS lang from cxc_clie_attrs where cxc_clie_id = %s UNION select fac_idioma::character varying AS lang from cxc_clie_attrs where cxc_clie_id = %s ) as s where s.lang is not NULL",c_id,c_id);
+        System.out.println("Consulta para seleccionar idioma factura:" + q);
 
+        Map<String, Object> map = this.getJdbcTemplate().queryForMap(q);
+
+        return String.valueOf(map.get("lang"));
+    }
     
     
     @Override

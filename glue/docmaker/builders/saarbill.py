@@ -19,6 +19,7 @@ import re
 
 __captions = {
     'SPA': {
+        'TL_DOC_LANG': 'ESPAÑOL',
         'TL_DOC_NAME': 'FACTURA',
         'TL_DOC_DATE': 'FECHA Y HORA',
         'TL_DOC_OBS': 'OBSERVACIONES',
@@ -43,10 +44,10 @@ __captions = {
         'TL_ART_UP': 'P. UNITARIO',
         'TL_ART_AMNT': 'IMPORTE',
         'TL_ART_SUBT': 'SUB-TOTAL',
-#        'TL_ART_TAX_ID': 'IVA',
         'TL_ART_TOTAL': 'TOTAL'
     },
     'ENG': {
+        'TL_DOC_LANG': 'ENGLISH',
         'TL_DOC_NAME': 'INVOICE',
         'TL_DOC_DATE': 'DATE',
         'TL_DOC_OBS': 'OBS',
@@ -71,7 +72,6 @@ __captions = {
         'TL_ART_UP': 'UNIT PRICE',
         'TL_ART_AMNT': 'AMOUNT',
         'TL_ART_SUBT': 'SUBT',
-#        'TL_ART_TAX_ID': 'TAX ID',
         'TL_ART_TOTAL': 'TOTAL'
     }
 }
@@ -842,7 +842,7 @@ def __create_total_section(dat):
     cont = [
        [
             dat['CAP_LOADED']['TL_ART_SUBT'],
-             dat['EXTRA_INFO']['CURRENCY_ABR'],
+            dat['EXTRA_INFO']['CURRENCY_ABR'],
             currency_format(
                __chomp_extra_zeroes(dat['XML_PARSED']['CFDI_SUBTOTAL'])
             )
@@ -853,7 +853,10 @@ def __create_total_section(dat):
         (tasa, _) = imptras['TASA'].split('.')
 
         row = [
-            "{0} {1}%".format(imptras['IMPUESTO'], tasa),
+            "{0} {1}%".format(
+                'TAX' if dat['CAP_LOADED']['TL_DOC_LANG'] == 'ENGLISH' else imptras['IMPUESTO'],
+                tasa
+            ),
             dat['EXTRA_INFO']['CURRENCY_ABR'],
             currency_format(__chomp_extra_zeroes(imptras['IMPORTE']))
         ]

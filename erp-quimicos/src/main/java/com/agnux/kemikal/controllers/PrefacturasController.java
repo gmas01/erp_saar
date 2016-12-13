@@ -916,7 +916,7 @@ public class PrefacturasController {
 
                                     String cfdi_xml = refId + ".xml";
                                     String glueDir = System.getenv("HOME") + "/glue";
-                                    String caption = "SPA";
+                                    String caption = this.getFacdao().idioma_factura(id_cliente);
                                     String params = String.format("-d -b saarbill -o %s/%s.pdf -i rfc=%s;cfdi_xml=%s;cap=%s", outputDir, refId, rfcEmpresaEmisora, cfdi_xml,caption);
                                     try {
                                         GlueRunner glueRunner = new GlueRunner(glueDir, log);

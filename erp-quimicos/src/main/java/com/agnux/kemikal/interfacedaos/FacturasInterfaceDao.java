@@ -71,7 +71,7 @@ public interface FacturasInterfaceDao {
     public HashMap<String, String> getDatosExtrasPdfCfd(String serieFolio, String proposito, String cadena_original, String sello_digital, Integer id_sucursal);
     
     
-    
+    public String idioma_factura(String c_id);
     
     
     public ArrayList<HashMap<String, String>> getTiposCancelacion();
