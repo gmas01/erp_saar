@@ -67,18 +67,6 @@ public class PrefacturasController {
     private GralInterfaceDao gralDao;
     
     @Autowired
-    @Qualifier("beanFacturador")
-    BeanFacturador bfcfd;
-    
-    @Autowired
-    @Qualifier("beanFacturadorCfdi")
-    BeanFacturadorCfdi bfcfdi;
-    
-    @Autowired
-    @Qualifier("beanFacturadorCfdiTf")
-    BeanFacturadorCfdiTimbre bfCfdiTf;
-    
-    @Autowired
     @Qualifier("daoFacturas")
     private FacturasInterfaceDao facdao;
         
@@ -104,19 +92,7 @@ public class PrefacturasController {
         return facdao;
     }
     
-    public BeanFacturador getBfCfd() {
-        return bfcfd;
-    }
-    
-    public BeanFacturadorCfdi getBfCfdi() {
-        return bfcfdi;
-    }
-    
-    public BeanFacturadorCfdiTimbre getBfCfdiTf() {
-        return bfCfdiTf;
-    }
-
-    
+   
     @RequestMapping(value="/startup.agnux")
     public ModelAndView startUp(HttpServletRequest request, HttpServletResponse response, 
             @ModelAttribute("user") UserSessionData user
