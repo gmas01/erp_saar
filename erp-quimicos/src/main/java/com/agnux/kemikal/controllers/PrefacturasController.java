@@ -122,12 +122,7 @@ public class PrefacturasController {
         x = x.addObject("sucursal", user.getSucursal());
         
         String userId = String.valueOf(user.getUserId());
-        
-        //System.out.println("id_de_usuario: "+userId);
-        
         String codificado = Base64Coder.encodeString(userId);
-        
-        //id de usuario codificado
         x = x.addObject("iu", codificado);
         
         return x;
