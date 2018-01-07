@@ -188,7 +188,7 @@ class FacXml(BuilderGen):
         for row in self.pg_query(conn, "{0}{1}".format(SQL, prefact_id)):
             rowset.append({
                 'SKU': row['sku'],
-                'DESCRIPCION': unidecode.nidecode(row['descripcion']),
+                'DESCRIPCION': unidecode.unidecode(row['descripcion']),
                 'UNIDAD': row['unidad'],
                 'PRODSERV': row['prodserv'],
                 'CANTIDAD': row['cantidad'],
