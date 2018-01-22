@@ -192,19 +192,6 @@ def undofacturar(logger, pt, req):
 
 def facturar(logger, pt, req):
 
-    def inception_pdf(f_outdoc, resdir, f_xmlin, inceptor_rfc):
-        dm_builder = 'facpdf'
-        kwargs = {'xml': f_xmlin, 'rfc': inceptor_rfc}
-        try:
-            dpl = DocPipeLine(logger, resdir,
-                rdirs_conf=pt.res.dirs,
-                pgsql_conf=pt.dbms.pgsql_conn)
-            dpl.run(dm_builder, f_outdoc, **kwargs)
-            return ErrorCode.SUCCESS
-        except:
-            logger.error(dump_exception())
-            return ErrorCode.DOCMAKER_ERROR
-
     def fetch_empdat(usr_id):
         sql = """select upper(EMP.rfc) as rfc, EMP.no_id as no_id
             FROM gral_suc AS SUC
@@ -299,10 +286,10 @@ def facturar(logger, pt, req):
                         req.get('prefact_id', None),
                         inceptor_data['no_id'])
             if rc == ErrorCode.SUCCESS:
-                rc = inception_pdf(
-                    outfile.replace('.xml', '.pdf'),    # We replace the xml extension
-                    resdir, outfile, inceptor_data['rfc']
-                )
+                rc = __run_builder(logger, pt,
+                        outfile.replace('.xml', '.pdf'),  # We replace the xml extension
+                        resdir, 'facpdf', xml = outfile,
+                        rfc = inceptor_data['rfc'])
 
     if os.path.isfile(tmp_file):
         os.remove(tmp_file)
