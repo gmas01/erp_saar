@@ -912,13 +912,12 @@ public class PocPedidosController {
             HashMap<String, String> succes = new HashMap<String, String>();
             
             Integer app_selected = 64;
-            String command_selected = "new";
             Integer id_usuario= user.getUserId();
             String folio_cot="";
-            
+
             String arreglo[];
             arreglo = new String[eliminado.length];
-            
+
             for(int i=0; i<eliminado.length; i++) { 
                 
                 if(!nocot[i].trim().equals("") && !nocot[i].equals("0")){
@@ -940,19 +939,38 @@ public class PocPedidosController {
                 //System.out.println(arreglo[i]);
             }
             
+
             //Serializar el arreglo
             String extra_data_array = StringUtils.join(arreglo, ",");
+
+            PotCatCusorder pc = new PotCatCusorder();
+            pc.matrix = extra_data_array;
+            pc.no_cot = folio_cot;
+            pc.usuario_id = id_usuario.toString();
+            pc.comments = observaciones.toUpperCase();
+            pc.salesman_id = id_agente;
+            pc.currency_val = tipo_cambio;
+            pc.purch_order = orden_compra.toUpperCase();
+            pc.tasaretimmex = tasa_ret_immex;
+            pc.date_lim = fecha_compromiso;
+            pc.customer_id = id_cliente;
+            pc.pedido_id = id_pedido.toString();
+            pc.trans = transporte.toUpperCase();
+            pc.delivery_place = lugar_entrega.toUpperCase();
+            pc.allow_desc = permitir_descto;
+            pc.razon_desc = motivo_descuento.toUpperCase();
+            pc.perc_desc = porcentaje_descto;
             
             if( id_pedido==0 ){
-                command_selected = "new";
+                pc.cmd = "new";
             }else{
                 if(accion_proceso.equals("cancelar")){
-                    command_selected = accion_proceso;
+                    pc.cmd = accion_proceso;
                 }else{
-                    command_selected = "edit";
+                    pc.cmd = "edit";
                 }
             }
-            
+
             if (no_cuenta==null) {
                 pc.account = "";
             }
@@ -983,82 +1001,32 @@ public class PocPedidosController {
             }
             
             //Verificar valores
-            select_almacen = StringHelper.verificarSelect(select_almacen);
-            select_moneda = StringHelper.verificarSelect(select_moneda);
-            select_condiciones = StringHelper.verificarSelect(select_condiciones);
-            check_ruta = StringHelper.verificarCheckBox(check_ruta);
-            check_enviar_obser = StringHelper.verificarCheckBox(check_enviar_obser);
-            check_flete = StringHelper.verificarCheckBox(check_flete);
-            select_tviaje = StringHelper.verificarSelect(select_tviaje);
-            select_pais_origen = StringHelper.verificarSelect(select_pais_origen);
-            select_estado_origen = StringHelper.verificarSelect(select_estado_origen);
-            select_municipio_origen = StringHelper.verificarSelect(select_municipio_origen);
-            select_pais_dest = StringHelper.verificarSelect(select_pais_dest);
-            select_estado_dest = StringHelper.verificarSelect(select_estado_dest);
-            select_municipio_dest = StringHelper.verificarSelect(select_municipio_dest);
-            select_tviaje = StringHelper.verificarSelect(select_tviaje);
+            pc.warehouse_id = StringHelper.verificarSelect(select_almacen);
+            pc.currency_id = StringHelper.verificarSelect(select_moneda);
+            pc.sup_credays_id = StringHelper.verificarSelect(select_condiciones);
+            pc.send_route = StringHelper.verificarCheckBox(check_ruta);
+            pc.send_comments = StringHelper.verificarCheckBox(check_enviar_obser);
+            pc.flete_enable = StringHelper.verificarCheckBox(check_flete);
             
             if (id_df.equals("0")){
                 id_df="1";//si viene cero, le asignamos uno para indicar que debe tomar la direccion de la tabla cxc_clie.
             }
+            pc.cust_df_id = id_df;
             
-            String data_string = 
-                    app_selected+"___"+
-                    command_selected+"___"+
-                    id_usuario+"___"+
-                    id_pedido+"___"+
-                    id_cliente+"___"+
-                    select_moneda+"___"+
-                    observaciones.toUpperCase()+"___"+
-                    tipo_cambio+"___"+
-                    id_agente+"___"+
-                    select_condiciones+"___"+
-                    orden_compra.toUpperCase()+"___"+
-                    fecha_compromiso+"___"+
-                    lugar_entrega.toUpperCase()+"___"+
-                    transporte.toUpperCase()+"___"+
-                    tasa_ret_immex+"___"+
-                    select_metodo_pago+"___"+
-                    no_cuenta+"___"+
-                    check_ruta+"___"+
-                    select_almacen+"___"+
-                    id_df+"___"+
-                    check_enviar_obser+"___"+
-                    check_flete+"___"+
-                    nombre_documentador+"___"+
-                    valor_declarado+"___"+
-                    select_tviaje+"___"+
-                    remolque1+"___"+
-                    remolque2+"___"+
-                    id_vehiculo+"___"+
-                    no_operador+"___"+
-                    nombre_operador+"___"+
-                    select_pais_origen+"___"+
-                    select_estado_origen+"___"+
-                    select_municipio_origen+"___"+
-                    select_pais_dest+"___"+
-                    select_estado_dest+"___"+
-                    select_municipio_dest+"___"+
-                    agena_id+"___"+
-                    rem_id+"___"+
-                    rem_dir_alterna+"___"+
-                    dest_id+"___"+
-                    dest_dir_alterna+"___"+
-                    observaciones_transportista+"___"+
-                    permitir_descto+"___"+
-                    motivo_descuento.toUpperCase()+"___"+
-                    porcentaje_descto+"___"+
-                    folio_cot;
-            
-            //System.out.println("data_string: "+data_string);
-            
-            succes = this.getPocDao().selectFunctionValidateAaplicativo(data_string,app_selected,extra_data_array);
+            succes = this.getPocDao().poc_val_cusorder(
+                new Integer(id_usuario),
+                tipo_cambio,
+                fecha_compromiso,
+                select_forma_pago,
+                no_cuenta,
+                extra_data_array);
             
             log.log(Level.INFO, "despues de validacion {0}", String.valueOf(succes.get("success")));
             String actualizo = "0";
             
             if( String.valueOf(succes.get("success")).equals("true") ){
-                actualizo = this.getPocDao().selectFunctionForThisApp(data_string, extra_data_array);
+                System.out.println(pc.conform_cat_store());
+                actualizo = this.getPocDao().poc_cat_cusorder(pc);
                 jsonretorno.put("actualizo",String.valueOf(actualizo));
             }
             
