@@ -15,6 +15,11 @@ import java.util.LinkedHashMap;
 public interface FacturasInterfaceDao {
     public int countAll(String data_string);
     public String selectFunctionForFacAdmProcesos(String campos_data, String extra_data_array);
+    public boolean ncr_exec_edit(final int _ncr_id, final int _usr_id, final int _agen_id,
+            final int _customer_id, final String _serie_folio, final String _comments,
+            final int _currency_id, final String _currency_value, final String _concepto,
+            final String _valor_impuesto, final String _sum_total, final String _retencion_total,
+            final String _amount_subtotal, final String _amount_impuesto, final int _ctb_tmov_id);
     public HashMap<String, String> selectFunctionValidateAaplicativo(String data, Integer idApp, String extra_data_array);
     public HashMap<String,String> getFac_Parametros(Integer id_emp, Integer id_suc);
     
