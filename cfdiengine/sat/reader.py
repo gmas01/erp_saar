@@ -74,6 +74,8 @@ class SaxReader(xml.sax.ContentHandler):
                     self.__ds['RECEPTOR_NAME'] = v
                 if k == "Rfc":
                     self.__ds['RECEPTOR_RFC'] = v
+                if k == "UsoCFDI":
+                    self.__ds['RECEPTOR_USAGE'] = v
 
         if name == "cfdi:Comprobante":
             for (k, v) in attrs.items():
