@@ -38,7 +38,7 @@ class FacPdf(BuilderGen):
             'TL_BILL_CURR': 'MONEDA',
             'TL_BILL_EXC_RATE': 'TIPO DE CAMBIO',
             'TL_PAY_DATE': 'FECHA DE PAGO',
-            'TL_SALE_MAN': '',     # 'AGENTE DE VENTAS',
+            'TL_CFDI_USE': 'USO CFDI',
             'TL_PAY_COND': 'CONDICIONES DE PAGO',
             'TL_ACC_NUM': 'NO. DE CUENTA',
             'TL_PAY_MET': 'METODO DE PAGO',
