@@ -695,8 +695,8 @@ class FacPdf(BuilderGen):
             c.append([dat['EXTRA_INFO']['CURRENCY_ABR'], dat['XML_PARSED']['FORMA_PAGO']])
             c.append([dat['CAP_LOADED']['TL_BILL_EXC_RATE'], dat['CAP_LOADED']['TL_ACC_NUM']])
             c.append([dat['XML_PARSED']['MONEY_EXCHANGE'], dat['EXTRA_INFO']['NO_CUENTA']])
-            c.append([dat['CAP_LOADED']['TL_PAY_DATE'], dat['CAP_LOADED']['TL_SALE_MAN']])
-            c.append([dat['EXTRA_INFO']['PAYMENT_DATE'], dat['EXTRA_INFO']['SALES_MAN']])
+            c.append([dat['CAP_LOADED']['TL_PAY_DATE'], dat['CAP_LOADED']['TL_CFDI_USE']])       #dat['CAP_LOADED']['TL_SALE_MAN']])
+            c.append([dat['EXTRA_INFO']['PAYMENT_DATE'], dat['XML_PARSED']['RECEPTOR_USAGE']])   #dat['EXTRA_INFO']['SALES_MAN']])
             t = Table(c,
                 [
                     4.0 * cm,
