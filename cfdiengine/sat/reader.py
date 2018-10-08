@@ -33,6 +33,7 @@ class SaxReader(xml.sax.ContentHandler):
             'INCEPTOR_CP': None,
             'RECEPTOR_NAME': None,
             'RECEPTOR_RFC': None,
+            'RECEPTOR_USAGE': None,
             'CFDI_CERT_NUMBER': None,
             'CFDI_DATE': None,
             'CFDI_SERIE': None,
